@@ -17,7 +17,7 @@ app.get("/", function (req, res) {
 app.get('/api/:datestring?', (req, res) => {
     let datestring = req.params.datestring
     let date
-    console.log("hello")
+    console.log(datestring)
 
     // if datestring is empty
     if (!datestring) {
