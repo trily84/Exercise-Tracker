@@ -42,10 +42,10 @@ app.get('/api/:datestring?', (req, res) => {
     }
 })
 
-// var listener = app.listen(process.env.PORT || 3000, function () {
-//   console.log('Your app is listening on port ' + listener.address().port);
-// });
+var listener = app.listen(process.env.PORT || 3000, function () {
+  console.log('Your app is listening on port ' + listener.address().port);
+});
 
 // create environment variable to listen to dynamic hosting port
-const port = process.env.PORT || 3000
-app.listen(port, () => console.log("Listening on port " + port + "..."))
+// const port = process.env.PORT || 3000
+// app.listen(port, () => console.log("Listening on port " + port + "..."))
