@@ -44,7 +44,7 @@ app.get('/api/:datestring?', (req, res) => {
         res.json({error: date.toString()})
     }
     else {
-        res.json({Unix: date.getTime(), UTC: date.toUTCString()})
+        res.json({unix: date.getTime(), utc: date.toUTCString()})
     }
 })
 
