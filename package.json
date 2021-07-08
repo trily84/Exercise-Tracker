@@ -7,17 +7,15 @@
 		"start": "node server.js"
 	},
 	"dependencies": {
-		"body-parser": "^6.14.8",
-		"cors": "^2.8.5",
-		"dns": "^0.2.2",
-		"express": "^6.14.8",
-		"mongoose": "^5.12.13",
-		"simple-short": "^1.0.7",
-		"tinyurl": "^1.1.7"
+		"cors": "2.8.5",
+		"dns": "0.2.2",
+		"express": "6.14.8",
+		"mongoose": "5.13.2",
+		"tinyurl": "1.1.7"
 	},
 	"engines": {
 		"node": "14.15.1",
-		"cors": "^2.8.0"
+		"cors": "2.8.5"
 	},
 	"repository": {
 		"type": "git",
