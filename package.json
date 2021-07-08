@@ -7,9 +7,10 @@
 		"start": "node server.js"
 	},
 	"dependencies": {
-		"cors": "^2.8.5",
+		"cors": "2.8.5",
 		"dns": "0.2.2",
-		"express": "6.14.8",
+		"express": "4.6.1",
+		"mongodb": "^3.6.8",
 		"mongoose": "5.13.2",
 		"tinyurl": "1.1.7"
 	},
