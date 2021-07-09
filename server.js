@@ -9,11 +9,6 @@ var TinyURL = require('tinyurl')
 var dns = require('dns');
 var app = express()
 
-// enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
-// so that your API is remotely testable by FCC 
-var cors = require('cors')
-app.use(cors({optionsSuccessStatus: 200})) // some legacy browsers choke on 204
-
 const Schema = mongoose.Schema
 const urlSchema = new Schema ({
 original_url: String,
@@ -22,6 +17,10 @@ id: Number
 })
 const url = mongoose.model("url", urlSchema)
 
+// enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
+// so that your API is remotely testable by FCC 
+var cors = require('cors')
+app.use(cors({optionsSuccessStatus: 200})) // some legacy browsers choke on 204
 
 // This is a body-parser that parse the body from post/fetch request EXCEPT from HTML post form
 app.use(express.json())
