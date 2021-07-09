@@ -1,10 +1,4 @@
 var express = require('express')
-
-// enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
-// so that your API is remotely testable by FCC 
-var cors = require('cors')
-app.use(cors({optionsSuccessStatus: 200})) // some legacy browsers choke on 204
-
 var mongoose = require('mongoose')
 MONGO_URI = "mongodb+srv://trily:aiai@cluster0.vvdsu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 mongoose.connect(MONGO_URI || "mongodb://localhost/trily")
@@ -15,6 +9,11 @@ var TinyURL = require('tinyurl')
 var dns = require('dns');
 var app = express()
 
+// enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
+// so that your API is remotely testable by FCC 
+var cors = require('cors')
+app.use(cors({optionsSuccessStatus: 200})) // some legacy browsers choke on 204
+
 const Schema = mongoose.Schema
 const urlSchema = new Schema ({
 original_url: String,
@@ -22,6 +21,7 @@ short_url: String,
 id: Number
 })
 const url = mongoose.model("url", urlSchema)
+
 
 // This is a body-parser that parse the body from post/fetch request EXCEPT from HTML post form
 app.use(express.json())
