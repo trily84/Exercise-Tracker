@@ -46,16 +46,14 @@ app.post('/api/shorturl', async (req, res) => {
   var regex = new RegExp("^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_\+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?");
 
   if (regex.test(original_url)) {
-    async function storeURL() {
-      let short_url = await TinyURL.shorten(original_url);
-      console.log("short_url:", short_url)
-      id++
+
+    let short_url = id
+    id ++
 
       // create a model ready to save to mongoDB
       var link = new url({
         original_url,
         short_url,
-        id
       })
 
       // save to mongoDB database
@@ -65,8 +63,30 @@ app.post('/api/shorturl', async (req, res) => {
       })
       return res.json(link)
     }
-    (storeURL())
-  }
+
+    // async function storeURL() {
+    //   let short_url = await TinyURL.shorten(original_url);
+    //   console.log("short_url:", short_url)
+    //   id++
+
+    //   // create a model ready to save to mongoDB
+    //   var link = new url({
+    //     original_url,
+    //     short_url,
+    //     id
+    //   })
+
+    //   // save to mongoDB database
+    //   link.save(function (err, data) {
+    //     if (err) return console.error(err);
+    //     // done(null, data)
+    //   })
+    //   return res.json(link)
+    // }
+    // (storeURL())
+
+  // }
+
   else {
     return res.json({ error: "invalid URL" })
   }
@@ -112,12 +132,13 @@ app.post('/api/shorturl', async (req, res) => {
 
 app.get("/api/shorturl/:id", function (req, res) {
   let id = req.params.id
+  let query = {short_url: id}
 
-  url.findOne({ id }, function (err, result) {
+  url.findOne(query, function (err, result) {
     if (err) throw err;
     if (result) {
       // res.send(result)
-      res.redirect(result.short_url)
+      res.redirect(result.original_url)
 
     }
     else {
