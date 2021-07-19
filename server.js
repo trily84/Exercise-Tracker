@@ -48,48 +48,53 @@ app.post('/api/shorturl', async (req, res) => {
   if (regex.test(original_url)) {
 
     let short_url = id
-    id ++
+    id++
 
-      // create a model ready to save to mongoDB
-      var link = new url({
-        original_url,
-        short_url,
-      })
+    // create a model ready to save to mongoDB
+    var link = new url({
+      original_url,
+      short_url,
+    })
 
-      // save to mongoDB database
-      link.save(function (err, data) {
-        if (err) return console.error(err);
-        // done(null, data)
-      })
-      return res.json(link)
-    }
+    // save to mongoDB database
+    link.save(function (err, data) {
+      if (err) return console.error(err);
+      // done(null, data)
+    })
+    return res.json(link)
+  }
 
-    // async function storeURL() {
-    //   let short_url = await TinyURL.shorten(original_url);
-    //   console.log("short_url:", short_url)
-    //   id++
+  // *********** using TinyURL npm to create short URL from original URL (not part of Freecodecamp user stories requirement *************
 
-    //   // create a model ready to save to mongoDB
-    //   var link = new url({
-    //     original_url,
-    //     short_url,
-    //     id
-    //   })
+  // async function storeURL() {
+  //   let short_url = await TinyURL.shorten(original_url);
+  //   console.log("short_url:", short_url)
+  //   id++
 
-    //   // save to mongoDB database
-    //   link.save(function (err, data) {
-    //     if (err) return console.error(err);
-    //     // done(null, data)
-    //   })
-    //   return res.json(link)
-    // }
-    // (storeURL())
+  //   // create a model ready to save to mongoDB
+  //   var link = new url({
+  //     original_url,
+  //     short_url,
+  //     id
+  //   })
+
+  //   // save to mongoDB database
+  //   link.save(function (err, data) {
+  //     if (err) return console.error(err);
+  //     // done(null, data)
+  //   })
+  //   return res.json(link)
+  // }
+  // (storeURL())
 
   // }
 
   else {
     return res.json({ error: "invalid URL" })
   }
+
+
+  // *********** using DNS npm to validate a live website URL (will not pass Freecodecamp test) *************
 
   // let urlNoHTTP = original_url.replace(/^https?:\/\//, "")
   // console.log("urlNoHTTP:", urlNoHTTP)
@@ -132,7 +137,7 @@ app.post('/api/shorturl', async (req, res) => {
 
 app.get("/api/shorturl/:id", function (req, res) {
   let id = req.params.id
-  let query = {short_url: id}
+  let query = { short_url: id }
 
   url.findOne(query, function (err, result) {
     if (err) throw err;
