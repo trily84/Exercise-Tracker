@@ -10,17 +10,17 @@ var dns = require('dns');
 var app = express()
 
 const Schema = mongoose.Schema
-const urlSchema = new Schema ({
-original_url: String,
-short_url: String,
-id: Number
+const urlSchema = new Schema({
+  original_url: String,
+  short_url: String,
+  id: Number
 })
 const url = mongoose.model("url", urlSchema)
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
 var cors = require('cors')
-app.use(cors({optionsSuccessStatus: 200})) // some legacy browsers choke on 204
+app.use(cors({ optionsSuccessStatus: 200 })) // some legacy browsers choke on 204
 
 // This is a body-parser that parse the body from post/fetch request EXCEPT from HTML post form
 app.use(express.json())
@@ -43,59 +43,87 @@ app.post('/api/shorturl', async (req, res) => {
   let original_url = req.body.url
   console.log("original_url:", original_url)
 
-  let urlNoHTTP = original_url.replace(/^https?:\/\//, "")
-  console.log("urlNoHTTP:", urlNoHTTP)
+  var regex = new RegExp("^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_\+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?");
 
-  dns.lookup(urlNoHTTP, (err, address, family) => {
-  console.log("error:", err)
-  console.log("address:", address)
-  console.log("family:", family)
-
-  if (err) {
-    console.log("err:", err)
-    return res.json({error: "invalid URL"})
-  }
-
-  else {
+  if (regex.test(original_url)) {
     async function storeURL() {
-    let short_url = await TinyURL.shorten(original_url);
-    console.log("short_url:", short_url)
-    id ++
+      let short_url = await TinyURL.shorten(original_url);
+      console.log("short_url:", short_url)
+      id++
 
-    // create a model ready to save to mongoDB
-    var link = new url({
-      original_url,
-      short_url,
-      id
-    })  
-    
-    // save to mongoDB database
-    link.save(function(err, data) {
-      if (err) return console.error(err);
-      // done(null, data)
-    })
-    return res.json(link)  
+      // create a model ready to save to mongoDB
+      var link = new url({
+        original_url,
+        short_url,
+        id
+      })
+
+      // save to mongoDB database
+      link.save(function (err, data) {
+        if (err) return console.error(err);
+        // done(null, data)
+      })
+      return res.json(link)
     }
     (storeURL())
   }
-  })
+  else {
+    return res.json({ error: "invalid URL" })
+  }
+
+  // let urlNoHTTP = original_url.replace(/^https?:\/\//, "")
+  // console.log("urlNoHTTP:", urlNoHTTP)
+
+  // dns.lookup(urlNoHTTP, (err, address, family) => {
+  // console.log("error:", err)
+  // console.log("address:", address)
+  // console.log("family:", family)
+
+  // if (err) {
+  //   console.log("err:", err)
+  //   return res.json({error: "invalid URL"})
+  // }
+
+  // else {
+  //   async function storeURL() {
+  //   let short_url = await TinyURL.shorten(original_url);
+  //   console.log("short_url:", short_url)
+  //   id ++
+
+  //   // create a model ready to save to mongoDB
+  //   var link = new url({
+  //     original_url,
+  //     short_url,
+  //     id
+  //   })  
+
+  //   // save to mongoDB database
+  //   link.save(function(err, data) {
+  //     if (err) return console.error(err);
+  //     // done(null, data)
+  //   })
+  //   return res.json(link)  
+  //   }
+  //   (storeURL())
+  // }
+  // })
 
 })
 
 app.get("/api/shorturl/:id", function (req, res) {
   let id = req.params.id
 
-  url.findOne({id}, function(err, result) {
+  url.findOne({ id }, function (err, result) {
     if (err) throw err;
     if (result) {
-        // res.send(result)
-        res.redirect(result.short_url)
+      // res.send(result)
+      res.redirect(result.short_url)
 
-    } 
+    }
     else {
-        res.send(JSON.stringify({
-            error : 'Error'
-        }))
+      res.send(JSON.stringify({
+        error: 'Error'
+      }))
     }
   })
 
