@@ -88,7 +88,14 @@ app.post('/api/users/:_id/exercises', async (req, res) => {
 
   username.findOneAndUpdate(query, { $inc: { count: 1 } , $push: { log: exObj } }, {new: true} , (err, result) => {
     if (err) return err
-    res.send(result)
+    console.log(result._id)
+    console.log(result.username)
+    console.log(exObj.description)
+    console.log(exObj.duration)
+    console.log(exObj.date)
+
+    let resObj = {_id: result._id, username: result.username, description: exObj.description, duration: exObj.duration, date: exObj.date}    
+    res.send(resObj)
   })
 
 })
