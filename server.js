@@ -83,7 +83,7 @@ app.post('/api/users/:_id/exercises', async (req, res) => {
   const exObj = { 
     description: req.body.description,
     duration: req.body.duration,
-    date: date
+    date: date.toDateString()
   }
 
   username.findOneAndUpdate(query, { $inc: { count: 1 } , $push: { log: exObj } }, {new: true} , (err, result) => {
@@ -95,9 +95,8 @@ app.post('/api/users/:_id/exercises', async (req, res) => {
     console.log(exObj.date)
 
     let duration = parseInt(exObj.duration);
-    let dateST = date.toDateString()
 
-    let resObj = {_id: result._id, username: result.username, date: dateST, duration: duration, description: exObj.description}    
+    let resObj = {_id: result._id, username: result.username, date: exObj.date, duration: duration, description: exObj.description}    
     res.json(resObj)
   })
 
@@ -121,10 +120,10 @@ app.get("/api/users", function (req, res) {
 
 app.get("/api/users/:_id/logs", function (req, res) {
 
-  console.log(req.params._id)
-  console.log(req.query.from)
-  console.log(req.query.to)
-  console.log(req.query.limit)
+  // console.log(req.params._id)
+  // console.log(req.query.from)
+  // console.log(req.query.to)
+  // console.log(req.query.limit)
 
   let _id = req.params._id
   let from = req.query.from
@@ -151,8 +150,10 @@ app.get("/api/users/:_id/logs", function (req, res) {
         log = log.slice(0, limit)
       }             
 
-    console.log(log)  
-    res.send(log)
+
+    let resObj = {_id: result._id, username: result.username, count: result.count, log: log}    
+    res.json(resObj)
+    // console.log(log)  
     
   }
   })
