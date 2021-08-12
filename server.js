@@ -1,21 +1,27 @@
 var express = require('express')
 var mongoose = require('mongoose')
-MONGO_URI = "mongodb+srv://trily:aiai@cluster0.vvdsu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+MONGO_URI = "mongodb+srv://trily:aiai@cluster0.vvdsu.mongodb.net/Exercise_Tracker?retryWrites=true&w=majority"
 mongoose.connect(MONGO_URI || "mongodb://localhost/trily")
 mongoose.connection.on("connected", () => {
   console.log("Mongoose is connected")
 })
-var TinyURL = require('tinyurl')
-var dns = require('dns');
+
 var app = express()
 
 const Schema = mongoose.Schema
-const urlSchema = new Schema({
-  original_url: String,
-  short_url: String,
-  id: Number
+const usernameSchema = new Schema({
+  username: String,
+  count: { type: Number },
+  log: [
+    {
+      description: { type: String },
+      duration: { type: Number },
+      date: { type: String, required: false }
+    }
+  ]
 })
-const url = mongoose.model("url", urlSchema)
+
+const username = mongoose.model("username", usernameSchema)
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
@@ -27,123 +33,72 @@ app.use(express.json())
 // This is a body parser for html post form
 app.use(express.urlencoded({ extended: false }))
 
-app.use(express.static('public'))
-
-// create an array to store url from post request
-// let linkArray = []
-let id = 0
+// app.use(express.static('public'))
 
 app.get("/", function (req, res) {
-  res.sendFile(__dirname + '/index.html')
+  console.log("test GET method at / - working")
+  res.sendFile(__dirname + '/public/index.html')
 })
 
-app.post('/api/shorturl', async (req, res) => {
+app.post('/api/users', async (req, res) => {
 
   console.log(req.body)
-  let original_url = req.body.url
-  console.log("original_url:", original_url)
+  let body_username = req.body.username
+  console.log("username:", body_username)
 
-  var regex = new RegExp("^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_\+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?");
+  // create a model ready to save to mongoDB
+  var username_model = new username({
+    "username": body_username,
+    "count": 0
+  })
 
-  if (regex.test(original_url)) {
+  // save to mongoDB database
+  username_model.save(function (err, data) {
+    if (err) return console.error(err);
+    // done(null, data)
+  })
+  return res.json(username_model)
+})
 
-    let short_url = id
-    id++
+app.post('/api/users/:_id/exercises', async (req, res) => {
 
-    // create a model ready to save to mongoDB
-    var link = new url({
-      original_url,
-      short_url,
-    })
+  let user_id = req.body._id || req.params._id
+  let query = { _id: user_id }
 
-    // save to mongoDB database
-    link.save(function (err, data) {
-      if (err) return console.error(err);
-      // done(null, data)
-    })
-    return res.json(link)
+  // var regex = new RegExp("(\d{4})\-(\d{2})\-(\d{4})")
+
+  var regex = /^\d{4}[-]\d{2}[-]\d{2}$/
+  dateST = req.body.date
+  console.log(regex.test(dateST))
+
+  if (regex.test(dateST)) {
+    console.log("correct date format")
+    date = new Date(dateST)
   }
-
-  // *********** using TinyURL npm to create short URL from original URL (not part of Freecodecamp user stories requirement *************
-
-  // async function storeURL() {
-  //   let short_url = await TinyURL.shorten(original_url);
-  //   console.log("short_url:", short_url)
-  //   id++
-
-  //   // create a model ready to save to mongoDB
-  //   var link = new url({
-  //     original_url,
-  //     short_url,
-  //     id
-  //   })
-
-  //   // save to mongoDB database
-  //   link.save(function (err, data) {
-  //     if (err) return console.error(err);
-  //     // done(null, data)
-  //   })
-  //   return res.json(link)
-  // }
-  // (storeURL())
-
-  // }
-
   else {
-    return res.json({ error: "invalid URL" })
+    console.log("incorrect date format")
+    date = new Date()
   }
 
+  const exObj = { 
+    description: req.body.description,
+    duration: req.body.duration,
+    date: date
+  }
 
-  // *********** using DNS npm to validate a live website URL (will not pass Freecodecamp test) *************
-
-  // let urlNoHTTP = original_url.replace(/^https?:\/\//, "")
-  // console.log("urlNoHTTP:", urlNoHTTP)
-
-  // dns.lookup(urlNoHTTP, (err, address, family) => {
-  // console.log("error:", err)
-  // console.log("address:", address)
-  // console.log("family:", family)
-
-  // if (err) {
-  //   console.log("err:", err)
-  //   return res.json({error: "invalid URL"})
-  // }
-
-  // else {
-  //   async function storeURL() {
-  //   let short_url = await TinyURL.shorten(original_url);
-  //   console.log("short_url:", short_url)
-  //   id ++
-
-  //   // create a model ready to save to mongoDB
-  //   var link = new url({
-  //     original_url,
-  //     short_url,
-  //     id
-  //   })  
-
-  //   // save to mongoDB database
-  //   link.save(function(err, data) {
-  //     if (err) return console.error(err);
-  //     // done(null, data)
-  //   })
-  //   return res.json(link)  
-  //   }
-  //   (storeURL())
-  // }
-  // })
+  username.findOneAndUpdate(query, { $inc: { count: 1 } , $push: { log: exObj } }, {new: true} , (err, result) => {
+    if (err) return err
+    res.send(result)
+  })
 
 })
 
-app.get("/api/shorturl/:id", function (req, res) {
-  let id = req.params.id
-  let query = { short_url: id }
+app.get("/api/users", function (req, res) {
 
-  url.findOne(query, function (err, result) {
+  username.find({}, function (err, result) {
     if (err) throw err;
     if (result) {
-      // res.send(result)
-      res.redirect(result.original_url)
+      res.send(result)
 
     }
     else {
@@ -152,7 +107,46 @@ app.get("/api/shorturl/:id", function (req, res) {
       }))
     }
   })
+})
 
+app.get("/api/users/:_id/logs", function (req, res) {
+
+  console.log(req.params._id)
+  console.log(req.query.from)
+  console.log(req.query.to)
+  console.log(req.query.limit)
+
+  let _id = req.params._id
+  let from = req.query.from
+  let to = req.query.to
+  let limit = req.query.limit
+
+  username.findOne({_id: req.params._id}, function (err, result) {
+    if (err) res.send("invalid _id");
+    if (result) {
+
+      let log = result.log
+      
+      if (from) {
+        const fromDate = new Date(from);
+        log = log.filter(exe => new Date(exe.date) > fromDate) 
+      }
+      
+      if (to) {
+        const toDate = new Date(to);
+        log = log.filter(exe => new Date(exe.date) < toDate)
+      }
+      
+      if (limit) {
+        log = log.slice(0, limit)
+      }             
+
+    console.log(log)  
+    res.send(log)
+    
+  }
+  })
+  
 })
 
 var listener = app.listen(process.env.PORT || 3000, function () {

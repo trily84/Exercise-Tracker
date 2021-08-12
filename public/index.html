@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,28 +8,34 @@
   <title>URL Shortener Microservices</title>
   <link rel="stylesheet" href="/style.css">
 </head>
+
 <body>
-<container>
-<h2 id="title">URL Shortener Microservices</h2>
-<h4>Example Usage:</h4>
-<a>[project url]/api/shorturl</a><br><br>
+  <container>
+    <h2 id="title">Exercise Tracker Microservices</h2>
+    <h4>Example Usage:</h4>
+    <a>POST /api/users</a><br><br>
 
-<form action="api/shorturl" method="POST">
-    <label for="url_input">URL:</label>
-    <input
-      id="url_input"
-      type="text"
-      name="url"
-      placeholder="https://amazon.com/"
-    />
-    <input type="submit" value="POST URL" />
-</form>
+    <form action="api/users" method="POST">
+      <label for="username"></label>
+      <input id="username_input" type="text" name="username" placeholder="username" />
+      <input type="submit" value="submit" />
+    </form>
 
-<h4>Example Usage:</h4>
-<a href="api/shorturl/1">[project url]/api/shorturl/1</a>
+    <form action="api/users/:_id/exercises" method="POST">
+      <label for="exercise"></label>
+      <input id="_id" type="text" name="_id" placeholder="_id" />
+      <input id="description" type="text" name="description" placeholder="description" />
+      <input id="duration" type="text" name="duration" placeholder="duration (minutes)" />
+      <input id="date" type="text" name="date" placeholder="date (yyyy-mm-dd)" />
+      <input type="submit" value="submit" />
+    </form>
 
-<p>Will redirect to https://www.example.com/
-</p>
-</container>
+    <h4>Example Usage:</h4>
+    <p>GET user's exercise log: GET /api/users/:_id/logs?[from][&to][&limit]</p>
+
+    <p>[ ] = optional</p>
+    <p>from, to = dates (yyyy-mm-dd); limit = number</p>
+  </container>
 </body>
+
 </html>
