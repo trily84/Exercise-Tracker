@@ -95,7 +95,7 @@ app.post('/api/users/:_id/exercises', async (req, res) => {
     console.log(exObj.date)
 
     let resObj = {_id: result._id, username: result.username, description: exObj.description, duration: exObj.duration, date: exObj.date}    
-    res.send(resObj)
+    res.json(resObj)
   })
 
 })
