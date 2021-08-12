@@ -94,7 +94,10 @@ app.post('/api/users/:_id/exercises', async (req, res) => {
     console.log(exObj.duration)
     console.log(exObj.date)
 
-    let resObj = {_id: result._id, username: result.username, description: exObj.description, duration: exObj.duration, date: exObj.date}    
+    var duration = parseInt(exObj.duration, 10);
+
+
+    let resObj = {_id: result._id, username: result.username, description: exObj.description, duration: duration, date: exObj.date}    
     res.json(resObj)
   })
 
