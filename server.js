@@ -30,6 +30,9 @@ app.use(cors({ optionsSuccessStatus: 200 })) // some legacy browsers choke on 20
 
 // This is a body-parser that parse the body from post/fetch request EXCEPT from HTML post form
 app.use(express.json())
+
+app.use(express.static(__dirname + '/public'));
+
 // This is a body parser for html post form
 app.use(express.urlencoded({ extended: false }))
 
@@ -60,10 +63,10 @@ app.post('/api/users', async (req, res) => {
   return res.json(username_model)
 })
 
-app.post('/api/users/:_id/exercises', async (req, res) => {
+app.post('/api/users/:username_input/exercises', async (req, res) => {
 
-  let user_id = req.body._id || req.params._id
-  let query = { _id: user_id }
+  let username_input = req.body.username || req.params.username_input
+  let query = { username: username_input }
 
   // var regex = new RegExp("(\d{4})\-(\d{2})\-(\d{4})")
 
@@ -154,6 +157,49 @@ app.get("/api/users/:_id/logs", function (req, res) {
     let resObj = {_id: result._id, username: result.username, count: result.count, log: log}    
     res.json(resObj)
     // console.log(log)  
+    
+  }
+  })
+  
+})
+
+app.post("/api/users/:username_input", function (req, res) {
+
+  // console.log(req.params._id)
+  // console.log(req.query.from)
+  // console.log(req.query.to)
+  // console.log(req.query.limit)
+
+  let username_input = req.body.username || req.params.username_input
+  let from = req.query.from
+  let to = req.query.to
+  let limit = req.query.limit
+
+  console.log(username_input)
+
+  username.findOne({username: username_input}, function (err, result) {
+    if (err) res.send("invalid username");
+    if (result) {
+
+      let log = result.log
+      
+      if (from) {
+        const fromDate = new Date(from);
+        log = log.filter(exe => new Date(exe.date) > fromDate) 
+      }
+      
+      if (to) {
+        const toDate = new Date(to);
+        log = log.filter(exe => new Date(exe.date) < toDate)
+      }
+      
+      if (limit) {
+        log = log.slice(0, limit)
+      }             
+
+
+    let resObj = {username: result.username, count: result.count, log: log}    
+    res.json(resObj)
     
   }
   })

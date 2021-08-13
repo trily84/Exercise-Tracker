@@ -5,34 +5,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>URL Shortener Microservices</title>
+  <title>Exercise Tracker</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
   <container>
-    <h2 id="title">Exercise Tracker Microservices</h2>
+    <h2 id="title">Personal Exercise Tracker</h2>
     <h4>Example Usage:</h4>
-    <a>POST /api/users</a><br><br>
+    <p>POST/api/users</p>
+    <div>
+      <form action="api/users" method="POST">
+        <label for="username"></label>
+        <input id="username_input" type="text" name="username" placeholder="username" />
+        <input type="submit" value="create new username" />
+      </form>
+    </div>
+    
+    <div>
+      <form action="api/users/:username_input/exercises" method="POST">
+        <label for="exercise"></label>
+        <input id="username" type="text" name="username" placeholder="username" />
+        <input id="description" type="text" name="description" placeholder="description" />
+        <input id="duration" type="text" name="duration" placeholder="duration (minutes)" />
+        <input id="date" type="text" name="date" placeholder="date (yyyy-mm-dd)" />
+        <input type="submit" value="add new exercise" />
+      </form>
+    </div>
 
-    <form action="api/users" method="POST">
-      <label for="username"></label>
-      <input id="username_input" type="text" name="username" placeholder="username" />
-      <input type="submit" value="submit" />
-    </form>
-
-    <form action="api/users/:_id/exercises" method="POST">
-      <label for="exercise"></label>
-      <input id="_id" type="text" name="_id" placeholder="_id" />
-      <input id="description" type="text" name="description" placeholder="description" />
-      <input id="duration" type="text" name="duration" placeholder="duration (minutes)" />
-      <input id="date" type="text" name="date" placeholder="date (yyyy-mm-dd)" />
-      <input type="submit" value="submit" />
-    </form>
+    <div>
+      <form action="api/users/:username_input" method="POST">
+        <label for="exercise"></label>
+        <input id="username" type="text" name="username" placeholder="username" />
+        <input type="submit" value="show exercise log" />
+      </form>
+    </div>
 
     <h4>Example Usage:</h4>
-    <p>GET user's exercise log: GET /api/users/:_id/logs?[from][&to][&limit]</p>
-
+    <p>GET user's exercise log: GET/api/users/:_id/logs?[from][&to][&limit]</p>
     <p>[ ] = optional</p>
     <p>from, to = dates (yyyy-mm-dd); limit = number</p>
   </container>
