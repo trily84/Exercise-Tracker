@@ -171,11 +171,12 @@ app.post("/api/users/:username_input", function (req, res) {
   // console.log(req.query.limit)
 
   let username_input = req.body.username || req.params.username_input
-  let from = req.query.from
-  let to = req.query.to
-  let limit = req.query.limit
+  let from = req.body.from
+  let to = req.body.to
 
   console.log(username_input)
+  console.log(from)
+  console.log(to)
 
   username.findOne({username: username_input}, function (err, result) {
     if (err) res.send("invalid username");
@@ -191,12 +192,7 @@ app.post("/api/users/:username_input", function (req, res) {
       if (to) {
         const toDate = new Date(to);
         log = log.filter(exe => new Date(exe.date) < toDate)
-      }
-      
-      if (limit) {
-        log = log.slice(0, limit)
-      }             
-
+      }         
 
     let resObj = {username: result.username, count: result.count, log: log}    
     res.json(resObj)
