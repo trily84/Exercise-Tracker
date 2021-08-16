@@ -42,11 +42,20 @@ p {
   padding-left: 3px;
 }
 
+::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: rgb(233, 233, 233);
+  opacity: 1; /* Firefox */
+}
+
 input[type="text"] {
+  background-color: #798ea0;
   border: 1px solid #474747;
   min-height: 20px;
   padding: 3px;
   border-radius: 4px;
+  margin-top: 2px;
+  color: #1d1d1d;
 }
 
 input[type="text"]:focus {
@@ -57,8 +66,35 @@ input[type="text"]:focus {
 }
 
 input[type="text"]:hover:not(:focus) {
-  border: 1px solid rgb(148, 148, 148);
+  border: 2px solid rgb(71, 71, 71);
   outline: none;
+  padding: 2px;
+}
+
+.button {
+  display: inline-block;
+  background-color: #798ea0;
+  padding: 0.35em 1.2em;
+  border: 1px solid #353535;
+  margin-top: 2px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: "Roboto", sans-serif;
+  font-weight: 300;
+  color: #ebebeb;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.button:hover {
+  color: #000000;
   background-color: #ebebeb;
-  padding: 3px;
+}
+
+@media all and (max-width: 30em) {
+  .button {
+    display: block;
+    margin: 0.4em auto;
+  }
 }
