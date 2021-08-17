@@ -72,7 +72,7 @@ input[type="text"]:hover:not(:focus) {
 }
 
 .button {
-  -webkit-appearance: auto;
+  -webkit-appearance: none;
   display: inline-block;
   background-color: #798ea0;
   padding: 0.35em 1.2em;
@@ -89,14 +89,14 @@ input[type="text"]:hover:not(:focus) {
 }
 
 .button:hover {
-  -webkit-appearance: auto;
+  -webkit-appearance: none;
   color: #000000;
   background-color: #ebebeb;
 }
 
 @media all and (max-width: 30em) {
   .button {
-    -webkit-appearance: auto;
+    -webkit-appearance: none;
     display: block;
     margin: 0.4em auto;
   }
