@@ -1,6 +1,8 @@
 var express = require('express')
 var mongoose = require('mongoose')
-MONGO_URI = "mongodb+srv://trily:aiai@cluster0.vvdsu.mongodb.net/Exercise_Tracker?retryWrites=true&w=majority"
+// MONGO_URI = "mongodb+srv://trily:aiai@cluster0.vvdsu.mongodb.net/Exercise_Tracker?retryWrites=true&w=majority"
+require('dotenv').config()
+const MONGO_URI = process.env.ATLAS_URI;
 mongoose.connect(MONGO_URI || "mongodb://localhost/trily")
 mongoose.connection.on("connected", () => {
   console.log("Mongoose is connected")
